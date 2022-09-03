@@ -27,26 +27,35 @@ const ReactionSchema = new Schema(
 );
 
 //Thought Schema
-const ThoughtSchema = new Schema({
-    thoughtText: {
-        type: String,
-        required: 'Please let us know your thoughts!',
-        minLength: 1,
-        maxLength: 280
+const ThoughtSchema = new Schema(
+    {
+        thoughtText: {
+            type: String,
+            required: 'Please let us know your thoughts!',
+            minLength: 1,
+            maxLength: 280
+        },
+        createdAt: {
+            type: Date,
+            default: Date.now,
+            get: createdAtVal => dateFormat(createdAtVal)
+        },
+        //this is for the user that created this thought
+        username: {
+            type: String,
+            required: true
+        },
+        //use ReactionsSchema to validate data for reactions
+        reactions: [ReactionSchema]
     },
-    createdAt: {
-        type: Date,
-        default: Date.now,
-        get: createdAtVal => dateFormat(createdAtVal)
-    },
-    //this is for the user that created this thought
-    username: {
-        type: String,
-        required: true
-    },
-    //use ReactionsSchema to validate data for reactions
-    reactions: [ReactionSchema]
-});
+    {
+        toJSON: {
+            virtuals: true,
+            getters: true
+        },
+        id: false
+    }
+);
 
 ThoughtSchema.virtual('reactionCount').get(function() {
     return this.reactions.length;
