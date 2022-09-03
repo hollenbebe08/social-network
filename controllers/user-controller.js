@@ -42,7 +42,10 @@ const userController ={
     createUser({ body }, res){
         User.create(body)
         .then(dbUserData => res.json(dbUserData))
-        .catch(err => res.status(400).json(err));
+        .catch(err => {
+            console.log(err)
+            res.status(400).json(err)
+        })
     },
 
     //update a user by id
@@ -69,7 +72,39 @@ const userController ={
             res.json(dbUserData);
         })
         .catch(err => res.status(400).json(err));
+    },
+
+    //create a friend
+    createFriend ({params}, res){
+        User.findOneAndUpdate(
+            {_id: params.userId},
+            {$push: {friends: params.friendId}},
+            {new: true})
+        .then(dbUserData => {
+            if(!dbUserData){
+                res.status(404).json({message: 'There is no user with that ID'});
+                return;
+            }
+            res.json(dbUserData);
+            })
+        .catch(err => res.status(400).json(err));
+    },
+
+    //delete a friend
+    deleteFriend({params, body}, res){
+        User.findOneAndDelete(
+            {_id: params.userId},
+            {$pull: {friends: params.friendId}},
+            {new: true})
+        .then(dbUserData => {
+            if(!dbUserData){
+                res.status(404).json({message: 'There is no user with that ID!'});
+                return;
+            }
+            res.json(dbUserData);
+        })
+        .catch(err => res.status(400).json(err))
     }
 };
 
-module.exports = userController
+module.exports = userController;
