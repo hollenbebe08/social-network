@@ -8,7 +8,7 @@ router
     .post(addThought)
 
 //callback to find a thought by id and either update/remove the thought
-router.route('/:thoughtId')
+router.route('/:id')
 .get(getThoughtById)
 .put(updateThought)
 .delete(removeThought);
