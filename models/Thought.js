@@ -4,6 +4,7 @@ const dateFormat = require('../utils/dateFormat');
 //reaction Schema
 const ReactionSchema = new Schema(
     {
+        //set custom id to avoid confusion with the parent thought id
         reactionId: {
             type: Schema.Types.ObjectId,
             default: () => new Types.ObjectId()
